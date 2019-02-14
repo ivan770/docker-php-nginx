@@ -7,6 +7,9 @@ LABEL Maintainer="ivan770 <leshenko.ivan770@gmail.com>" \
 RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl \
     php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype \
     php7-mbstring php7-gd php7-pdo php7-session php7-tokenizer php7-pdo_mysql nginx supervisor curl
+    
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
@@ -26,8 +29,8 @@ COPY src/ /var/www/html/
 EXPOSE 80 443
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-#Fix Laravel storage privileges
+# Fix Laravel storage privileges
 RUN chmod -R 0777 /var/www/html/storage
 
-#Link Laravel storage
+# Link Laravel storage
 RUN php artisan storage:link
